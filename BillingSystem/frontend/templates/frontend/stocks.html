@@ -1,0 +1,137 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% block page_style %}
+<link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+{% endblock %}
+{% block brand %}
+    {% for post in posts %}
+        {{ post.brand }}
+    {% endfor %}
+{% endblock %}
+{% block Showroom %}
+<h6 class="collapse-header">Inventory:</h6>
+<a class="collapse-item" href="{% url 'stocks' %}">Stocks</a>
+<a class="collapse-item" href="{% url 'customer' %}">Customer</a>
+<a class="collapse-item" href="#">Accessaries</a>
+<a class="collapse-item" href="#">Marchendize</a>
+<h6 class="collapse-header">Sales:</h6>
+<a class="collapse-item" href="{% url 'billings_process' %}">Billing Details</a>
+{% endblock %}
+{% block repair %}
+<h6 class="collapse-header">Repair & Servicing:</h6>
+<a class="collapse-item" href="#">Service Details</a>
+{% endblock %}
+{% block admin %}
+<a class="collapse-item" href="{% url 'update_inventory' %}">Update Inventory Stocks</a>
+<a class="collapse-item" href="{% url 'update_product' %}">Update Products</a>
+<div class="collapse-divider"></div>
+<!-- <h6 class="collapse-header">Other Pages:</h6>
+<a class="collapse-item" href="404.html">404 Page</a>
+<a class="collapse-item" href="blank.html">Blank Page</a> -->
+{% endblock %}
+{% block body %}
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Stocks</h1>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+    </div>
+    <!-- Collapsable Card Example -->
+    <div class="card shadow mb-4">
+        <!-- Card Header - Accordion -->
+        <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse"
+            role="button" aria-expanded="true" aria-controls="collapseCardExample">
+            <h6 class="m-0 font-weight-bold text-primary">Filter Stocks</h6>
+        </a>
+        <!-- Card Content - Collapse -->
+        <div class="collapse show" id="collapseCardExample">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">{{ salesform.as_p }}
+                        {{ colourform.as_p }}
+                        {{ customerform.as_p }}
+                        <button class="btn btn-primary btn-user btn-block" type="submit">
+                        Submit for sale
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Current Stocks</h6>
+        </div>
+<!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <td>Product</td>
+                            <td>Name</td>
+                            <td>Make</td>
+                            <td>S/N</td>
+                            <td>Chassis No</td>
+                            <td>Capacity</td>
+                            <td>Engine No</td>
+                            <td>Battery No</td>
+                            <td>Key No</td>
+                            <td>Colour</td>
+                            <td>Price</td>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <td>Product</td>
+                            <td>Name</td>
+                            <td>Make</td>
+                            <td>S/N</td>
+                            <td>Chassis No</td>
+                            <td>Capacity</td>
+                            <td>Engine No</td>
+                            <td>Battery No</td>
+                            <td>Key No</td>
+                            <td>Colour</td>
+                            <td>Price</td>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        {% for post in context_data %}
+                        <tr>
+                            <td>{{ post.Product }}</td>
+                            <td>{{ post.Product_Model }}</td>
+                            <td>{{ post.Name }}</td>
+                            <td>{{ post.Make }}</td>
+                            <td>{{ post.SN }}</td>
+                            <td>{{ post.Chassis_No }}</td>
+                            <td>{{ post.Capacity }}</td>
+                            <td>{{ post.Battery_No }}</td>
+                            <td>{{ post.Key_No }}</td>
+                            <td>{{ post.Colour }}</td>
+                            <td>{{ post.Price }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+<!----------------------------------------------------------------------------------------------------------------------------------------------------------->
+    </div>
+</div>
+{% endblock %}
+
+
+{% block page_level_plugins_style %}
+
+<!-- Page level plugins -->
+<script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
+<!-- Page level custom scripts -->
+<script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+
+{% endblock %}
