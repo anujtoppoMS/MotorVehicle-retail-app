@@ -1,12 +1,12 @@
 version: "3.9"
 services:
-  BillingSystem:
+  billingSystem:
     depends_on:
       - postgres_db
     build:
       context: ./BillingSystem
       dockerfile: Dockerfile
-    image: BillingSystem-k8s:v1
+    image: billingSystem-k8s:v1
     environment:
       - PORT=8020
     env_file:
@@ -14,8 +14,8 @@ services:
     ports:
       - "8001:8020"
     command: sh -c "chmod +x /app/migrate.sh && sh /app/migrate.sh && /app/entrypoint.sh"
-    volumes:
-       - staticfiles:/app/staticfiles/
+    # volumes:
+    #    - staticfiles:/app/staticfiles/
   postgres_db:
     image: postgres
     restart: always
