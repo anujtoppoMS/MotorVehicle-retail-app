@@ -1,4 +1,4 @@
-django:latest
+django
 gunicorn
 requests
 django-dotenv
