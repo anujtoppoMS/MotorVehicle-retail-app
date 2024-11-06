@@ -27,4 +27,4 @@ jobs:
         pip install -r requirements.txt
     - name: Run Tests
       run: |
-        docker compose docker-compose-deploy.yaml up --build
+        docker-compose -f docker-compose-deploy.yaml up --build
