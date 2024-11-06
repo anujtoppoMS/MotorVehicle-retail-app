@@ -27,6 +27,4 @@ jobs:
         pip install -r requirements.txt
     - name: Run Tests
       run: |
-        cd BillingSystem
-        pwd
-        python manage.py test
+        docker compose docker-compose-deploy.yaml up --build
