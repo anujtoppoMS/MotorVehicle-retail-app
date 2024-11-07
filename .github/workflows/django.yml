@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: docker-latest
+    runs-on: python-latest
     strategy:
       max-parallel: 4
       matrix:
@@ -21,6 +21,11 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Get Latest Image
+      id: latest
+      uses: shrink/actions-docker-latest-image@v1
+      with:
+        repository: docker.pkg.github.com/${{ github.repository }}/example
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
