@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: combined-deployment
+  labels:
+    app: combined-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: combined-app
+  template:
+    metadata:
+      labels:
+        app: combined-app
+    spec:
+      containers:
+      - name: billingsystem
+        image: monarch.azurecr.io/motorvehicle-retail-app-billingsystem:latest
+        ports:
+        - containerPort: 8020
+        envFrom: 
+          - configMapRef:
+             name: env-config
+        volumeMounts:
+        - name: static-data
+          mountPath: /vol/web
+        # command: ["sh", "-c", "sh /scripts/entrypoint.sh"]
+      - name: proxy-app
+        image: monarch.azurecr.io/motorvehicle-retail-app-proxy
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: static-data
+          mountPath: /vol/static
+      volumes:
+      - name: static-data
+        persistentVolumeClaim:
+          claimName: static-data-pvc
+      imagePullSecrets:
+      - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: combined-service
+spec:
+  selector:
+    app: combined-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8020
+    name: billing-port
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+    name: proxy-port
