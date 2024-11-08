@@ -20,18 +20,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "mysecretfordevenv")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = str(os.environ.get('DEBUG')) == "1"
-
-ENV_ALLOWED_HOST = os.environ.get("ENV_ALLOWED_HOST")
+DEBUG = bool(int(os.environ.get('DEBUG', 0)))
 
 ALLOWED_HOSTS = []
-
-if ENV_ALLOWED_HOST:
-    ALLOWED_HOSTS = [ENV_ALLOWED_HOST]
-
+ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOSTS')
+if ALLOWED_HOSTS_ENV:
+    ALLOWED_HOSTS.extend(ALLOWED_HOSTS_ENV.split(','))
 
 # Application definition
 
@@ -84,20 +81,14 @@ WSGI_APPLICATION = 'BillingSystem.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-
+DB_ENGINE = os.environ.get("POSTGRES_ENGINE")
 DB_USERNAME = os.environ.get("POSTGRES_USER")
 DB_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
 DB_DATABASE = os.environ.get("POSTGRES_DB")
 DB_HOST = os.environ.get("POSTGRES_HOST")
 DB_PORT = os.environ.get("POSTGRES_PORT")
 DB_IS_AVAIL = all([
+    DB_ENGINE,
     DB_USERNAME,
     DB_PASSWORD,
     DB_DATABASE,
@@ -109,7 +100,7 @@ DB_IGNORE_SSL=os.environ.get("DB_IGNORE_SSL") == "true"
 if DB_IS_AVAIL:
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.postgresql",
+            "ENGINE": DB_ENGINE,
             "NAME": DB_DATABASE,
             "USER": DB_USERNAME,
             "PASSWORD": DB_PASSWORD,
@@ -156,8 +147,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / "frontend/templates/frontend/"]
+STATIC_URL = '/static/'
+STATIC_ROOT = '/vol/web/staticfiles'
+STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'static'), ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -176,8 +168,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('ENCRYPTED_EMAIL_PASSWORD')
 
-# EMAIL_HOST_USER = 'anujtoppo928@gmail.com'
-# EMAIL_HOST_PASSWORD = 'ddzl huhl tuou mvcn'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
