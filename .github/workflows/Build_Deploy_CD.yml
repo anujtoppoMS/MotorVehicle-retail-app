@@ -17,7 +17,7 @@ jobs:
     - name: Build the Docker image
       run: |
         echo ${{ secrets.AZURE_SECRET }} | docker login -u ${{ secrets.ACR_USERNAME }} --password-stdin monarch.azurecr.io
-        docker compose --file docker-compose-deploy.yaml --tag billingsystem:$(date +%s) up --build -d
+        docker compose --file docker-compose-deploy.yaml up --build -d
         container_name=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep -i billing)
         docker tag $container_name monarch.azurecr.io/$container_name
         docker push monarch.azurecr.io/$container_name
