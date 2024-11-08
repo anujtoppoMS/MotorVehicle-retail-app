@@ -1,0 +1,48 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: |
+        echo ${{ secrets.AZURE_SECRET }} | docker login -u ${{ vars.PRINCIPAL_ID }} --password-stdin monarch.azurecr.io
+        docker-compose --file docker-compose-deploy.yaml --tag billingsystem:$(date +%s) up --build -d
+        container_name=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep -i billing)
+        docker tag $container_name monarch.azurecr.io/$container_name
+        docker push monarch.azurecr.io/$container_name
+        container_name=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep -i proxy)
+        docker tag $container_name monarch.azurecr.io/$container_name
+        docker push monarch.azurecr.io/$container_name
+
+  deploy:
+  
+      runs-on: ubuntu-latest
+  
+      steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-kubectl@v4
+      - uses: Azure/k8s-set-context@v4
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+      - uses: Azure/k8s-deploy@v4
+        with:
+          action: deploy
+          manifests: | 
+            .pvc.yaml 
+            .billing-app.yaml
+            .ingress.yaml
+      - name: Verify Deployment 
+        run: kubectl rollout status deployment/your-deployment-name
+          
+          
