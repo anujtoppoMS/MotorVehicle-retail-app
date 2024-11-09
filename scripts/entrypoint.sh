@@ -5,11 +5,17 @@
 
 set -e
 
+SUPER_USER=${DJANGO_SUPERUSER_USERNAME:-"anuj"}
+SUP_PASS=${DJANGO_SUPERUSER_PASSWORD:-"anuj@1992"}
+SUP_EMAIL=${DJANGO_SUERPUSER_EMAIL:-"mailme@anujtoppo.com"}
+
 cd /BillingSystem/
 
 python manage.py makemigrations --noinput
 
 python manage.py migrate --noinput
+
+python manage.py createsuperuser --username $SUPER_USER --email $SUP_EMAIL --noinput || true
 
 python manage.py collectstatic --noinput
 
