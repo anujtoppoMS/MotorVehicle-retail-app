@@ -15,7 +15,7 @@ services:
       - "8000:8020"
     env_file:
       - .env
-    command: sh -c "sh /scripts/entrypoint.sh"
+    command: sh -c "sh /scripts/migrate.sh && sh /scripts/collectstatic.sh"
 
   proxy:
     build:

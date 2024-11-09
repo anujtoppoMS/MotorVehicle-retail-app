@@ -1,3 +1,4 @@
 #!/bin/bash
-cd /app/
-/opt/venv/bin/python manage.py collectstatic --noinput
+cd /BillingSystem/
+# /opt/venv/bin/python manage.py collectstatic --noinput
+python manage.py collectstatic --noinput

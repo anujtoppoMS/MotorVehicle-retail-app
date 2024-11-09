@@ -7,10 +7,4 @@ set -e
 
 cd /BillingSystem/
 
-python manage.py makemigrations --noinput
-
-python manage.py migrate --noinput
-
-python manage.py collectstatic --noinput
-
 uwsgi --socket :8000 --master --enable-threads --module BillingSystem.wsgi
