@@ -20,17 +20,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "mysecretfordevenv")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = str(os.environ.get('DEBUG')) == "1"
+DEBUG = bool(int(os.environ.get('DEBUG', 0)))
 
-ENV_ALLOWED_HOST = os.environ.get("ENV_ALLOWED_HOST")
 
 ALLOWED_HOSTS = []
-
-if ENV_ALLOWED_HOST:
-    ALLOWED_HOSTS = [ENV_ALLOWED_HOST]
+ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOSTS')
+if ALLOWED_HOSTS_ENV:
+    ALLOWED_HOSTS.extend(ALLOWED_HOSTS_ENV.split(','))
 
 
 # Application definition
@@ -84,12 +83,12 @@ WSGI_APPLICATION = 'BillingSystem.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 DB_USERNAME = os.environ.get("POSTGRES_USER")
@@ -102,7 +101,7 @@ DB_IS_AVAIL = all([
     DB_PASSWORD,
     DB_DATABASE,
     DB_HOST,
-    DB_PORT
+    DB_PORT,
 ])
 DB_IGNORE_SSL=os.environ.get("DB_IGNORE_SSL") == "true"
 
@@ -119,6 +118,7 @@ if DB_IS_AVAIL:
     }
     if not DB_IGNORE_SSL:
          DATABASES["default"]["OPTIONS"] = {
+            # "sslmode": "disable"
             "sslmode": "require"
          }
 
@@ -156,8 +156,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / "frontend/templates/frontend/"]
+STATIC_URL = '/static/'
+STATIC_ROOT = '/vol/web/staticfiles'
+STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'static'), ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
