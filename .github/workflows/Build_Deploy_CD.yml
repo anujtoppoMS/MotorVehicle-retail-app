@@ -25,24 +25,20 @@ jobs:
         docker tag $container_name monarch.azurecr.io/$container_name
         docker push monarch.azurecr.io/$container_name
 
-  deploy:
-  
-      runs-on: ubuntu-latest
-  
-      steps:
-      - uses: actions/checkout@v4
-      - uses: azure/setup-kubectl@v4
-      - uses: Azure/k8s-set-context@v4
-        with:
-          kubeconfig: ${{ secrets.KUBE_CONFIG }}
-      - uses: Azure/k8s-deploy@v4
-        with:
-          action: deploy
-          manifests: | 
-            .pvc.yaml 
-            .billing-app.yaml
-            .ingress.yaml
-      - name: Verify Deployment 
-        run: kubectl rollout status deployment/your-deployment-name
+    - uses: actions/checkout@v4
+    - name: Deploy build
+    - uses: azure/setup-kubectl@v4
+    - uses: Azure/k8s-set-context@v4
+      with:
+        kubeconfig: ${{ secrets.KUBE_CONFIG }}
+    - uses: Azure/k8s-deploy@v4
+      with:
+        action: deploy
+        manifests: | 
+          pvc.yaml 
+          billing-app.yaml
+          ingress.yaml
+    - name: Verify Deployment 
+      run: kubectl rollout status deployment/your-deployment-name
           
           
