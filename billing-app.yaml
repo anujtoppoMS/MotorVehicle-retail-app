@@ -25,7 +25,7 @@ spec:
         volumeMounts:
         - name: static-data
           mountPath: /vol/web
-        # command: ["sh", "-c", "sh /scripts/entrypoint.sh"]
+        command: ["sh", "-c", "sh /scripts/entrypoint.sh"]
       - name: proxy-app
         image: monarch.azurecr.io/motorvehicle-retail-app-proxy
         ports:
