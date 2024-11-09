@@ -49,6 +49,11 @@ jobs:
         action: deploy
         manifests: | 
           pvc.yaml 
+          if [ -z $config_name ]; then
+            kubectl create configmap env-config --from-env-file=.env
+          else
+            kubectl create configmap env-config --from-env-file=.env --dry-run=client -o yaml > env-config.yaml
+          fi
           billing-app.yaml
           ingress.yaml
           
