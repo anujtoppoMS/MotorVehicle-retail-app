@@ -49,6 +49,7 @@ jobs:
         action: deploy
         manifests: | 
           pvc.yaml 
+          config_name=$(kubectl get configmap | grep env-config)
           if [ -z $config_name ]; then
             kubectl create configmap env-config --from-env-file=.env
           else
