@@ -2,8 +2,8 @@ version: '3.9'
 
 services:
   billingsystem:
-    depends_on:
-        - postgres_db
+    # depends_on:
+    #     - postgres_db
     build:
       context: .
       dockerfile: Dockerfile
