@@ -18,7 +18,7 @@ spec:
       - name: billingsystem
         image: monarch.azurecr.io/motorvehicle-retail-app-billingsystem:latest
         ports:
-        - containerPort: 8020
+        - containerPort: 8000
         envFrom: 
           - configMapRef:
              name: env-config
@@ -63,8 +63,8 @@ spec:
     app: combined-app
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 8020
+    port: 8000
+    targetPort: 8000
     name: billing-port
   - protocol: TCP
     port: 8080
