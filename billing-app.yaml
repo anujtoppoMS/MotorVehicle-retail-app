@@ -47,27 +47,10 @@ spec:
           requests:
             cpu: "150m"
             memory: "128Mi"
-      - name: postgres_db
-        image: monarch.azurecr.io/motorvehicle-retail-postgres_db
-        ports:
-        - containerPort: 5434
-        volumeMounts:
-        - name: static-data
-          mountPath: /vol/static
-        resources:
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
-          requests:
-            cpu: "250m"
-            memory: "256Mi"
       volumes:
       - name: static-data
         persistentVolumeClaim:
           claimName: static-data-pvc
-      - name: postgres_data
-        persistentVolumeClaim:
-          claimName: postgres_data-pvc
       imagePullSecrets:
       - name: regcred
 ---

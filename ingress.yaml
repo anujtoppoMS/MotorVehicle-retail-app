@@ -12,7 +12,7 @@ spec:
       - path: /
         backend:
           service:
-            name: myproxy-app-service
+            name: combined-service
             port:
               number: 8030
         pathType: Exact
