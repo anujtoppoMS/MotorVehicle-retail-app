@@ -59,4 +59,5 @@ jobs:
           ingress.yaml
           
     - name: Verify Deployment 
-      run: kubectl rollout status deployment/your-deployment-name
+      run: | 
+        kubectl rollout status deployment/billing-app
