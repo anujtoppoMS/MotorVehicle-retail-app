@@ -42,6 +42,14 @@ jobs:
       uses: Azure/k8s-set-context@v4
       with:
         kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+    - name: Check for env-config ConfigMap and apply
+      run: |
+        if ! kubectl get configmap env-config; then
+            kubectl create configmap env-config --from-env-file=.env
+        else
+            kubectl create configmap env-config --from-env-file=.env --dry-run=client -o yaml | kubectl apply -f -
+        fi
         
     - name: Deploy to AKS
       uses: Azure/k8s-deploy@v4
@@ -49,11 +57,6 @@ jobs:
         action: deploy
         manifests: | 
           pvc.yaml 
-          if [ -z $(kubectl get configmap | grep env-config) ]; then
-            kubectl create configmap env-config --from-env-file=.env
-          else
-            kubectl create configmap env-config --from-env-file=.env --dry-run=client -o yaml > env-config.yaml
-          fi
           billing-app.yaml
           ingress.yaml
           
