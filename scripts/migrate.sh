@@ -11,6 +11,7 @@ SUPER_USER=${DJANGO_SUPERUSER_USERNAME:-"anuj"}
 
 # cd /BillingSystem/
 
+/opt/bin/python manage.py collectstatic --noinput
 /opt/bin/python manage.py migrate --noinput
 /opt/bin/python manage.py createsuperuser --username $SUPER_USER --email $SUPERUSER_EMAIL --noinput || true
 
