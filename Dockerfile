@@ -1,38 +1,34 @@
-# FROM python:3.9.7-slim
-
-# COPY . /app
-# WORKDIR /app
-
-# RUN python3 -m venv /opt/venv
-
-# RUN /opt/venv/bin/pip install pip --upgrade && \
-#     /opt/venv/bin/pip install -r requirements.txt && \
-#     chmod +x entrypoint.sh
-
-# CMD ["/app/entrypoint.sh"]
-
-
 FROM python:3.8-alpine
 
-ENV PATH="/scripts:${PATH}"
+# Set environment variable for PATH
+ENV PATH="/scripts:/opt/bin:${PATH}"
 
+# Copy necessary files
 COPY ./requirements.txt /requirements.txt
-RUN apk add --update --no-cache --virtual .tmp gcc libc-dev linux-headers
-RUN pip install -r /requirements.txt
-RUN apk del .tmp
-
-RUN mkdir /BillingSystem
 COPY ./BillingSystem /BillingSystem
-WORKDIR /BillingSystem
-RUN mkdir /scripts
 COPY ./scripts /scripts
-RUN chmod +x /scripts/entrypoint.sh
 
-RUN mkdir -p /vol/web/static
-RUN adduser -D user
-RUN chown -R user:user /vol && chown -R user:user /scripts/
-RUN chmod -R 755 /vol/web
+# Update and install dependencies
+RUN apk add --update --no-cache --virtual .tmp-deps \
+    build-base musl-dev linux-headers && \ 
+    python -m venv /opt && /opt/bin/pip install --upgrade pip && \
+    /opt/bin/pip install -r /requirements.txt && \
+    apk del .tmp-deps && \
+    adduser --disabled-password --no-create-home user
+
+# Set up working directory and permissions
+WORKDIR /BillingSystem
+RUN mkdir -p /vol/web/static && \
+    chmod -R +x /scripts/ && \
+    chown -R user:user /vol && \
+    chown -R user:user /scripts/ && \
+    chmod -R 755 /vol/
+
+# Switch to non-root user
 USER user
+
+# Print the PATH for debugging
 RUN echo ${PATH}
 
+# Set the entrypoint command
 CMD ["/scripts/entrypoint.sh"]

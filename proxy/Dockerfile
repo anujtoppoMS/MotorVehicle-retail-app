@@ -1,12 +1,17 @@
 FROM nginxinc/nginx-unprivileged:1-alpine
 
-COPY ./default.conf /etc/nginx/conf.d/default.conf
+COPY ./default.conf.tpl /etc/nginx/default.conf.tpl
 COPY ./uwsgi_params /etc/nginx/uwsgi_params
+COPY ./run.sh /run.sh
 
 USER root
 
 RUN mkdir -p /vol/static
-
-RUN chmod 755 /vol/static
+RUN chmod 755 /vol/static && \
+    touch /etc/nginx/conf.d/default.conf && \
+    chown nginx:nginx /etc/nginx/conf.d/default.conf && \
+    chmod +x /run.sh
 
 USER nginx
+
+CMD [ "/run.sh" ]

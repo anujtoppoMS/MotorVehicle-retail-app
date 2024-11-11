@@ -15,7 +15,9 @@ services:
       - "8000:8020"
     env_file:
       - .env
-    command: sh -c "sh /scripts/migrate.sh && sh /scripts/collectstatic.sh"
+    command: sh -c "sh /scripts/entrypoint.sh"
+    networks:
+     - my-network
 
   proxy:
     build:
@@ -27,19 +29,23 @@ services:
       - "8080:8080"
     depends_on:
       - billingsystem
+    networks:
+     - my-network
 
   # postgres_db:
   #   image: postgres:latest
   #   restart: always
-  #   command: ["postgres", "-p", "5434"]
+  #   command: ["postgres", "-p", "5432"]
   #   env_file: 
-  #     - BillingSystem/.env
+  #     - .env
   #   expose:
   #     - 5434
   #   ports:
   #     - "5434:5432"
   #   volumes:
   #     - postgres_data:/var/lib/postgresql/data/
+  #   networks:
+  #    - my-network
   # redis_db:
   #   image: redis
   #   restart: always
@@ -55,3 +61,6 @@ volumes:
   static_data:
   # postgres_data:
   # redis_data:
+
+networks:
+  my-network:

@@ -1,6 +1,6 @@
-# upstream billingsystem {
-#     server :8000;
-# }
+upstream billingsystem {
+    server billingsystem:8000;
+}
 
 server {
     listen 8080;
@@ -10,7 +10,7 @@ server {
     }
 
     location / {
-        uwsgi_pass billingsystem:8000;
+        uwsgi_pass billingsystem;
         include /etc/nginx/uwsgi_params;
     }
 }
