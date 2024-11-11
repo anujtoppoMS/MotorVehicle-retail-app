@@ -1,6 +1,3 @@
-upstream billingsystem {
-    server billingsystem:8000;
-}
 
 server {
     listen 8080;
