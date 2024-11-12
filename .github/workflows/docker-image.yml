@@ -41,15 +41,17 @@ jobs:
       uses: Azure/k8s-deploy@v4
       with:
         action: deploy
-        manifests: ingress.yaml
+        manifests: |
+          ingress.yaml
+          loadbalancer.yaml
         namespace: ingress-nginx
         
-    - name: Deploy LoadBalancer to AKS
-      uses: Azure/k8s-deploy@v4
-      with:
-        action: deploy
-        manifests: loadbalancer.yaml
-        namespace: billing-system
+    # - name: Deploy LoadBalancer to AKS
+    #   uses: Azure/k8s-deploy@v4
+    #   with:
+    #     action: deploy
+    #     manifests: loadbalancer.yaml
+    #     namespace: billing-system
           
     - name: Verify Deployment 
       run: | 
