@@ -34,6 +34,5 @@ spec:
         backend:
           service:
             name: combined-service
-            namespace: billing-system
             port:
               number: 80
