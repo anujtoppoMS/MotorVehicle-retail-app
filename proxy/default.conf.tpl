@@ -3,14 +3,14 @@ upstream billingsystem {
 }
 
 server {
-    listen 8080;
+    listen 8000;
 
     location /static {
         alias /vol/static;
     }
 
     location / {
-        uwsgi_pass billingsystem;
+        uwsgi_pass proxy-app:8080;
         include /etc/nginx/uwsgi_params;
     }
 }
