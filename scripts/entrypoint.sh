@@ -12,4 +12,4 @@ set -e
 /opt/bin/python manage.py migrate
 # /opt/bin/python manage.py createsuperuser --username $SUPER_USER --email $SUPERUSER_EMAIL --noinput || true
 
-uwsgi --socket :8000 --master --enable-threads --module BillingSystem.wsgi
+uwsgi --socket :8080 --master --enable-threads --module BillingSystem.wsgi
