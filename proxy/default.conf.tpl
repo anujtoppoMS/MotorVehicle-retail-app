@@ -1,12 +1,16 @@
+upstream billingsystem {
+    server billingsystem:8000;
+}
+
 server {
-    listen ${LISTEN_PORT};
+    listen 8080;
 
     location /static {
         alias /vol/static;
     }
 
     location / {
-        uwsgi_pass ${APP_HOST}:${APP_PORT};
+        uwsgi_pass billingsystem;
         include /etc/nginx/uwsgi_params;
     }
 }
