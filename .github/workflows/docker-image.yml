@@ -35,7 +35,7 @@ jobs:
         manifests: | 
           pvc.yaml 
           billing-app.yaml
-          ingress.yaml
+          ingress.yaml --namespace=ingress-nginx
           loadbalancer.yaml
           
     - name: Verify Deployment 
