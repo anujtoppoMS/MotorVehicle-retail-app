@@ -14,6 +14,7 @@ spec:
       labels:
         app: combined-app
     spec:
+      hostname: billingsystem
       containers:
       - name: billingsystem
         image: monarch.azurecr.io/motorvehicle-retail-app-billingsystem:latest
