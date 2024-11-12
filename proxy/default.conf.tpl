@@ -1,7 +1,3 @@
-upstream billingsystem {
-    server billingsystem:8000;
-}
-
 server {
     listen ${LISTEN_PORT};
 
