@@ -55,6 +55,7 @@ jobs:
           pvc.yaml 
           billing-app.yaml
           ingress.yaml
+          loadbalancer.yaml
           
     - name: Verify Deployment 
       run: | 
