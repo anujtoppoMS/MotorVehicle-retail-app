@@ -8,6 +8,9 @@ COPY ./requirements.txt /requirements.txt
 COPY ./BillingSystem /BillingSystem
 COPY ./scripts /scripts
 
+WORKDIR /BillingSystem
+EXPOSE 8000
+
 # Update and install dependencies
 RUN apk add --update --no-cache --virtual .tmp-deps \
     build-base musl-dev linux-headers && \ 
@@ -17,7 +20,6 @@ RUN apk add --update --no-cache --virtual .tmp-deps \
     adduser --disabled-password --no-create-home user
 
 # Set up working directory and permissions
-WORKDIR /BillingSystem
 RUN mkdir -p /vol/web/static && \
     chmod -R +x /scripts/ && \
     chown -R user:user /vol && \
