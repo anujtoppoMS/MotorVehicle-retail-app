@@ -9,7 +9,6 @@ COPY ./BillingSystem /BillingSystem
 COPY ./scripts /scripts
 
 WORKDIR /BillingSystem
-EXPOSE 8000
 
 # Update and install dependencies
 RUN apk add --update --no-cache --virtual .tmp-deps \
