@@ -26,8 +26,8 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-  - host: 
-    http: anujtoppo.com
+  - host: anujtoppo.com 
+    http:
       paths:
       - path: /
         pathType: Prefix
