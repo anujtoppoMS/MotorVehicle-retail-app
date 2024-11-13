@@ -23,40 +23,40 @@ jobs:
         docker tag $container_name monarch.azurecr.io/$container_name
         docker push monarch.azurecr.io/$container_name
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: build
 
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+  #   steps:
+  #   - name: Checkout Repository
+  #     uses: actions/checkout@v4
       
-    - name: Set up Kubectl
-      uses: azure/setup-kubectl@v4
+  #   - name: Set up Kubectl
+  #     uses: azure/setup-kubectl@v4
 
-    - name: Set Context for Kubernetes
-      uses: Azure/k8s-set-context@v4
-      with:
-        kubeconfig: ${{ secrets.KUBE_CONFIG }}
+  #   - name: Set Context for Kubernetes
+  #     uses: Azure/k8s-set-context@v4
+  #     with:
+  #       kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
-    - name: Check for env-config ConfigMap and apply
-      run: |
-        if ! kubectl get configmap env-config; then
-            kubectl create configmap env-config --from-env-file=.env
-        else
-            kubectl create configmap env-config --from-env-file=.env --dry-run=client -o yaml | kubectl apply -f -
-        fi
+  #   - name: Check for env-config ConfigMap and apply
+  #     run: |
+  #       if ! kubectl get configmap env-config; then
+  #           kubectl create configmap env-config --from-env-file=.env
+  #       else
+  #           kubectl create configmap env-config --from-env-file=.env --dry-run=client -o yaml | kubectl apply -f -
+  #       fi
         
-    - name: Deploy to AKS
-      uses: Azure/k8s-deploy@v4
-      with:
-        action: deploy
-        manifests: | 
-          pvc.yaml 
-          billing-app.yaml
-          ingress.yaml
-          loadbalancer.yaml
+  #   - name: Deploy to AKS
+  #     uses: Azure/k8s-deploy@v4
+  #     with:
+  #       action: deploy
+  #       manifests: | 
+  #         pvc.yaml 
+  #         billing-app.yaml
+  #         ingress.yaml
+  #         loadbalancer.yaml
           
-    - name: Verify Deployment 
-      run: | 
-        kubectl rollout status deployment/combined-deployment
+  #   - name: Verify Deployment 
+  #     run: | 
+  #       kubectl rollout status deployment/combined-deployment

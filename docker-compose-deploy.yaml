@@ -2,8 +2,6 @@ version: '3.9'
 
 services:
   billingsystem:
-    # depends_on:
-    #     - postgres_db
     build:
       context: .
       dockerfile: Dockerfile
@@ -12,10 +10,10 @@ services:
     environment:
       - PORT=8000
     ports:
-      - "8000:8000"
+      - "8000:8020"
     env_file:
       - .env
-    command: sh -c "sh /scripts/migrate.sh"
+    command: sh -c "sh /scripts/migrate.sh && sh /scripts/entrypoint.sh"
     networks:
      - my-network
 
@@ -32,35 +30,8 @@ services:
     networks:
      - my-network
 
-  # postgres_db:
-  #   image: postgres:latest
-  #   restart: always
-  #   command: ["postgres", "-p", "5432"]
-  #   env_file: 
-  #     - .env
-  #   expose:
-  #     - 5434
-  #   ports:
-  #     - "5434:5432"
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data/
-  #   networks:
-  #    - my-network
-  # redis_db:
-  #   image: redis
-  #   restart: always
-  #   expose:
-  #     - 6388
-  #   ports:
-  #     - "6388:6388"
-  #   volumes:
-  #       - redis_data:/data
-  #   entrypoint: redis-server --appendonly yes --port 6388
-
 volumes:
   static_data:
-  # postgres_data:
-  # redis_data:
 
 networks:
   my-network:
