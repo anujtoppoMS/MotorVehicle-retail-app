@@ -21,21 +21,12 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: billingsystem-service-ingress
-<<<<<<< HEAD
   namespace: ingress-nginx
-=======
-  namespace: ingress-nginx  # Add namespace if required
->>>>>>> b8d6fab (updated the files)
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/proxy-body-size: "16m" # Increase body size limit 
     nginx.ingress.kubernetes.io/proxy-buffer-size: "16k" # Increase buffer size
 spec:
-<<<<<<< HEAD
-  ingressClassName: nginx
-  rules:
-  - host: anujtoppo.com 
-=======
   ingressClassName: nginx  # Specify the ingress class
   tls:
   - hosts:
@@ -43,7 +34,6 @@ spec:
     secretName: billingsystem-tls
   rules:
   - host: anujtoppo.com  # Add your domain name here
->>>>>>> b8d6fab (updated the files)
     http:
       paths:
       - path: /
