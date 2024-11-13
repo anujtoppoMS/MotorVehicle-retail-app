@@ -33,4 +33,4 @@ jobs:
     - run: |
         set -x
         docker version
-        docker-compose -f docker-compose-deploy.yaml up --build
+        docker compose -f docker-compose-deploy.yaml up --build
