@@ -33,7 +33,7 @@ spec:
     - anujtoppo.com
     secretName: billingsystem-tls
   rules:
-  - host: anujtoppo.com  # Add your domain name here
+  - host: #anujtoppo.com  # Add your domain name here
     http:
       paths:
       - path: /
@@ -42,4 +42,4 @@ spec:
           service:
             name: combined-service
             port:
-              number: 8080
+              number: 8000

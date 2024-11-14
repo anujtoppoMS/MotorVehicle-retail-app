@@ -1,9 +1,9 @@
 upstream billingsystem {
-    server billingsystem:8000;
+    server billingsystem:8020;
 }
 
 server {
-    listen 8080;
+    listen 8000;
 
     location /static {
         alias /vol/static;
