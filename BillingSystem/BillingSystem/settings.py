@@ -65,6 +65,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+SECURE_HSTS_SECONDS = 3600  # Adjust the duration as needed
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
+
+
 ROOT_URLCONF = 'BillingSystem.urls'
 
 TEMPLATES = [
