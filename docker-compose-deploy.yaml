@@ -1,30 +1,37 @@
-version: '3.9'
-
+# version: '3.9'
 services:
   billingsystem:
+    dns:
+     - 8.8.8.8
+     - 8.8.4.4
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: billingsystem
     volumes:
+      - ./BillingSystem:/BillingSystem
       - static_data:/vol/web
-    environment:
-      - PORT=8000
     ports:
-      - "8000:8020"
+      - "8000:8000"
     env_file:
       - .env
-    command: sh -c "sh /scripts/migrate.sh && sh /scripts/entrypoint.sh"
+    command: sh -c "sh /scripts/entrypoint.sh"
     networks:
      - my-network
 
   proxy:
+    dns:
+     - 8.8.8.8
+     - 8.8.4.4
     build:
       context: ./proxy
       dockerfile: Dockerfile
+    container_name: proxy
     volumes:
       - static_data:/vol/static
     ports:
-      - "8080:8080"
+      - "80:80"
+      - "443:443"
     depends_on:
       - billingsystem
     networks:
@@ -35,3 +42,4 @@ volumes:
 
 networks:
   my-network:
+    driver: bridge

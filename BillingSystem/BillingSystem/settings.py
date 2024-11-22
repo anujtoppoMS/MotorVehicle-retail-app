@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
 from pathlib import Path
+# from dotenv import load_dotenv 
+# # Load environment variables from .env file 
+# load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,12 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "mysecretfordevenv")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.environ.get('DEBUG', 0)))
-
-# ALLOWED_HOSTS = []
-# ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOSTS')
-# if ALLOWED_HOSTS_ENV:
-#     ALLOWED_HOSTS.extend(ALLOWED_HOSTS_ENV.split(','))
+DEBUG = bool(int(os.environ.get('DEBUG', 1)))
 
 ALLOWED_HOSTS = []
 ALLOWED_HOSTS.extend(
@@ -69,11 +67,13 @@ SECURE_HSTS_SECONDS = 3600  # Adjust the duration as needed
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
-
+# SECURE_SSL_REDIRECT = True
+CSRF_TRUSTED_ORIGINS = []
+CSRF_TRUSTED_ORIGINS.extend(filter(None,os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(','),))
 
 ROOT_URLCONF = 'BillingSystem.urls'
 
@@ -111,7 +111,7 @@ DB_IS_AVAIL = all([
     DB_PASSWORD,
     DB_DATABASE,
     DB_HOST,
-    DB_PORT
+    DB_PORT,
 ])
 DB_IGNORE_SSL=os.environ.get("DB_IGNORE_SSL") == "true"
 
@@ -176,6 +176,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = 'frontend'
 LOGIN_URL = 'login'
+
+# settings.py
+# BASE_URL = 'https://localhost:443'
+
 
 import os
 
