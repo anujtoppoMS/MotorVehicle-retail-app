@@ -1,0 +1,56 @@
+      
+apiVersion: apps/v1 
+kind: Deployment 
+metadata: 
+  name: proxy
+  namespace: billing-system 
+spec: 
+  replicas: 1 
+  selector: 
+    matchLabels: 
+      app: proxy 
+  template: 
+    metadata: 
+      labels: 
+        app: proxy 
+    spec: 
+      containers:
+        - name: proxy-app
+          image: monarch.azurecr.io/motorvehicle-retail-app-proxy
+          ports:
+          - containerPort: 80
+          - containerPort: 443
+          volumeMounts:
+          - name: static-data
+            mountPath: /vol/static
+          resources:
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
+            requests:
+              cpu: "150m"
+              memory: "128Mi"
+      volumes:
+        - name: static-data
+          persistentVolumeClaim:
+            claimName: static-data-pvc
+      imagePullSecrets:
+        - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxy-service
+  namespace: billing-system
+spec:
+  type: LoadBalancer
+  selector:
+    app: proxy
+  ports:
+  - protocol: TCP 
+    port: 80 
+    targetPort: 80 
+  - protocol: TCP 
+    port: 443 
+    targetPort: 443
+    name: proxy-port

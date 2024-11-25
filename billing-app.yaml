@@ -1,19 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: combined-deployment
+  name: billingsystem
   namespace: billing-system
-  labels:
-    app: combined-app
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: combined-app
+      app: billingsystem
   template:
     metadata:
       labels:
-        app: combined-app
+        app: billingsystem
     spec:
       hostname: billingsystem
       containers:
@@ -25,6 +23,8 @@ spec:
           - configMapRef:
              name: env-config
         volumeMounts:
+        - name: billing-data 
+          mountPath: /BillingSystem
         - name: static-data
           mountPath: /vol/web
         command: ["sh", "-c", "sh /scripts/entrypoint.sh"]
@@ -35,20 +35,6 @@ spec:
           requests:
             cpu: "250m"
             memory: "256Mi"
-      - name: proxy-app
-        image: monarch.azurecr.io/motorvehicle-retail-app-proxy
-        ports:
-        - containerPort: 8080
-        volumeMounts:
-        - name: static-data
-          mountPath: /vol/static
-        resources:
-          limits:
-            cpu: "300m"
-            memory: "256Mi"
-          requests:
-            cpu: "150m"
-            memory: "128Mi"
       volumes:
       - name: static-data
         persistentVolumeClaim:
@@ -59,17 +45,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: combined-service
+  name: billingsystem-service
   namespace: billing-system
 spec:
   selector:
-    app: combined-app
+    app: billingsystem
   ports:
   - protocol: TCP
     port: 8000
     targetPort: 8000
     name: billing-port
-  - protocol: TCP
-    port: 8080
-    targetPort: 8080
-    name: proxy-port
