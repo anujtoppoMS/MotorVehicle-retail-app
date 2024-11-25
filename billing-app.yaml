@@ -39,6 +39,7 @@ spec:
       - name: static-data
         persistentVolumeClaim:
           claimName: static-data-pvc
+      - name: billing-data
       imagePullSecrets:
       - name: regcred
 ---
