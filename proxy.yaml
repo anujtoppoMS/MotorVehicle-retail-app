@@ -15,7 +15,7 @@ spec:
         app: proxy 
     spec: 
       containers:
-        - name: proxy-app
+        - name: proxy
           image: monarch.azurecr.io/motorvehicle-retail-app-proxy
           ports:
           - containerPort: 80
