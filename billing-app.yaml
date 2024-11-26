@@ -23,8 +23,6 @@ spec:
           - configMapRef:
              name: env-config
         volumeMounts:
-        - name: billing-data 
-          mountPath: /BillingSystem
         - name: static-data
           mountPath: /vol/web
         # command: ["sh", "-c", "sh /scripts/entrypoint.sh"]
@@ -39,7 +37,6 @@ spec:
       - name: static-data
         persistentVolumeClaim:
           claimName: static-data-pvc
-      - name: billing-data
       imagePullSecrets:
       - name: regcred
 ---

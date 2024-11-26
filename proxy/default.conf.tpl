@@ -5,7 +5,7 @@ server {
 
     # Redirect all HTTP requests to HTTPS
     location / {
-        proxy_pass http://billingsystem:8000;
+        proxy_pass http://billingsystem-service:8000;
         include /etc/nginx/uwsgi_params;        
     }
     location /static {
@@ -22,7 +22,7 @@ server {
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers HIGH:!aNULL:!MD5;
     location / {
-        proxy_pass http://billingsystem:8000;
+        proxy_pass http://billingsystem-service:8000;
         include /etc/nginx/uwsgi_params;
     }
 
