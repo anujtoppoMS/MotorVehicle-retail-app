@@ -27,7 +27,7 @@ spec:
           mountPath: /BillingSystem
         - name: static-data
           mountPath: /vol/web
-        command: ["sh", "-c", "sh /scripts/entrypoint.sh"]
+        # command: ["sh", "-c", "sh /scripts/entrypoint.sh"]
         resources:
           limits:
             cpu: "500m"
