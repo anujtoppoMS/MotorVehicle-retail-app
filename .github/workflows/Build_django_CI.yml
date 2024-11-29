@@ -20,11 +20,6 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-
-    - name: Load .env file 
-      uses: aarcangeli/load-dotenv@v1 
-      with: 
-        path: '.env'
     
     - name: Install Dependencies
       run: |
