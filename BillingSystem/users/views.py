@@ -32,17 +32,17 @@ def register(request):
 def profile(request):
     return render(request, 'frontend/profile.html') 
 
-@api_view(['POST'])
-def register(request):
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        user = User.objects.get(username=request.data['username'])
-        user.set_password(request.data['password'])
-        user.save()
-        token = Token.objects.create(user=user)
-        return Response({'token': token.key, 'user': serializer.data})
-    return Response(serializer.errors, status=status.HTTP_200_OK)
+# @api_view(['POST'])
+# def register(request):
+#     serializer = UserSerializer(data=request.data)
+#     if serializer.is_valid():
+#         serializer.save()
+#         user = User.objects.get(username=request.data['username'])
+#         user.set_password(request.data['password'])
+#         user.save()
+#         token = Token.objects.create(user=user)
+#         return Response({'token': token.key, 'user': serializer.data})
+#     return Response(serializer.errors, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def login(request):
