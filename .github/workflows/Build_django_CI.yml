@@ -28,11 +28,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run Tests
-      run: |
-        python manage.py test
-
-    - name: Set up Docker Buildx
+    - name: Set up Docker
       uses: docker/setup-docker-action@v4
 
     - name: Set up environment variables
@@ -45,7 +41,7 @@ jobs:
         echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> $GITHUB_ENV
         echo "ENCRYPTED_EMAIL_PASSWORD=${{ secrets.ENCRYPTED_EMAIL_PASSWORD }}" >> $GITHUB_ENV
 
-    - name: Build and Deploy with Docker Compose
+    - name: Build and test
       run: |
         set -x
         docker version
