@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billingsystem
+  namespace: dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: billingsystem
+  template:
+    metadata:
+      name: billingsystem
+      namespace: dev
+      labels:
+        app: billingsystem
+    spec:
+      initContainers:
+        - name: init-copy
+          image: anujtoppo/billingsystem:v1
+          command: ["/bin/sh", "-c"]
+          args: ["mkdir -p /mnt/data && chmod -R 777 /mnt/data && cp -r /staticfiles/* /mnt/data"]
+          volumeMounts:
+            - name: static-data
+              mountPath: /mnt/data
+          securityContext:
+            runAsUser: 0  # run as root user
+      containers:
+      - name: billingsystem
+        image: anujtoppo/billingsystem:v1 #monarch.azurecr.io/motorvehicle-retail-app-billingsystem:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        envFrom:
+          - configMapRef:
+              name: configmap-billing
+          - secretRef:
+              name: billing-app-secret
+        volumeMounts:
+        - name: static-data
+          mountPath: /staticfiles/
+        # command: ["sh", "-c", "sh /scripts/collectstatic.sh && sh /scripts/entrypoint.sh"]
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+      volumes:
+      - name: static-data
+        hostPath:
+          path: /static_data/
+          type: DirectoryOrCreate
+          # sizeLimit: 10Mi
+
+        # persistentVolumeClaim:
+        #   claimName: static-data-pvc
+      imagePullSecrets:
+      - name: imagepullsecret-billingapp
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: billingsystem-service
+  namespace: dev
+spec:
+  selector:
+    app: billingsystem
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000
+    name: billing-port

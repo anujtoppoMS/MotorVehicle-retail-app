@@ -1,0 +1,66 @@
+      
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proxy
+  template:
+    metadata:
+      labels:
+        app: proxy
+    spec:
+      containers:
+        - name: proxy
+          image: anujtoppo/proxy:v1
+          imagePullPolicy: Always
+          # imagePullPolicy: IfNotPresent
+          # command: ["sh", "-c", "/run.sh"]
+          envFrom:
+            - configMapRef:
+                name: db-cm            
+          ports:
+            - containerPort: 443
+          securityContext:
+            runAsUser: 0
+            # capabilities:
+            #   add: ["NET_BIND_SERVICE"]
+          volumeMounts:
+            - name: static-data
+              mountPath: /vol/static/staticfiles/
+              readOnly: true
+          resources:
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
+            requests:
+              cpu: "150m"
+              memory: "128Mi"
+      volumes:
+        - name: static-data
+          hostPath:
+            path: /static_data/
+            type: DirectoryOrCreate
+          # persistentVolumeClaim:
+          #   claimName: static-data-pvc
+      # imagePullSecrets:
+      #   - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxy-service
+  namespace: dev
+spec:
+  type: LoadBalancer
+  selector:
+    app: proxy
+  ports:
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 443
