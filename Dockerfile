@@ -8,7 +8,7 @@ COPY ./requirements.txt /requirements.txt
 COPY ./BillingSystem /BillingSystem
 COPY ./scripts /scripts
 
-ENV HOSTNAME billingsystem
+# ENV HOSTNAME=billingsystem
 
 WORKDIR /BillingSystem
 
@@ -21,21 +21,21 @@ RUN apk add --update --no-cache --virtual .tmp-deps \
     adduser --disabled-password --no-create-home user
 
 # Set up working directory and permissions
-RUN mkdir -p /vol/web/static && \
-    mkdir -p /vol/web/log && \
+RUN mkdir -p /vol/web/log/ && \
     chmod -R +x /scripts/ && \
-    chown -R user:user /vol && \
-    chown -R user:user /scripts/ && \
+    chown -R user:user /vol/ && \
     chmod -R 755 /vol/ && \
+    chown -R user:user /scripts/ && \
     touch /vol/web/log/uwsgi.log && \
     chown user:user /vol/web/log/uwsgi.log && \
-    chmod 755 /vol/web/log/uwsgi.log
+    chmod 755 /vol/web/log/uwsgi.log 
+
+RUN /opt/bin/python manage.py collectstatic --noinput
 
 # Switch to non-root user
 USER user
 
-# Print the PATH for debugging
-RUN echo ${PATH}
+
 EXPOSE 8000
 # Set the entrypoint command
 CMD ["sh", "-c", "sh /scripts/migrate.sh && sh /scripts/entrypoint.sh"]

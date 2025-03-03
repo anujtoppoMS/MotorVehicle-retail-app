@@ -51,7 +51,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'crispy_forms',
+    "crispy_bootstrap5",
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
+CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -71,7 +76,7 @@ SECURE_HSTS_PRELOAD = True
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-# SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = True
 CSRF_TRUSTED_ORIGINS = []
 CSRF_TRUSTED_ORIGINS.extend(filter(None,os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(','),))
 
@@ -95,6 +100,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'BillingSystem.wsgi.application'
 
+# This tells Django to trust the proxy header that indicates a secure connection
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -127,9 +134,13 @@ if DB_IS_AVAIL:
         }
     }
     if not DB_IGNORE_SSL:
-         DATABASES["default"]["OPTIONS"] = {
+        DATABASES["default"]["OPTIONS"] = {
+            "sslmode": "disable"
+        }
+    else:
+        DATABASES["default"]["OPTIONS"] = {
             "sslmode": "require"
-         }
+        }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -161,12 +172,16 @@ USE_I18N = True
 
 USE_TZ = True
 
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/vol/web/staticfiles'
+STATIC_ROOT = '/staticfiles/'
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / 'media'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'static'), ]
 
 # Default primary key field type

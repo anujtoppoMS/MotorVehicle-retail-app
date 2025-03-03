@@ -1,4 +1,5 @@
 {% extends 'frontend/base.html' %}
+{% load crispy_forms_tags %}
 {% load static %}
 {% block brand %}
     {% for post in posts %}
@@ -49,7 +50,7 @@
                                 </div>
                                 <form class="user" method="post">
                                     {% csrf_token %}
-                                    {{ form.as_p }}
+                                    {{ form|crispy }}
                                     <button class="btn btn-primary btn-user btn-block" type="submit">Log In</button>
                                 </form>
                                 <div class="text-center">
