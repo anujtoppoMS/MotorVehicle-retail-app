@@ -1,44 +1,67 @@
 # version: '3.9'
 services:
   billingsystem:
-    dns:
-     - 8.8.8.8
-     - 8.8.4.4
+    #  
     build:
       context: .
       dockerfile: Dockerfile
     container_name: billingsystem
     volumes:
-      - ./BillingSystem:/BillingSystem
-      - static_data:/vol/web
+      - log_data:/vol/web
+      - static_data:/staticfiles/
     ports:
       - "8000:8000"
     env_file:
       - .env
-    command: sh -c "sh /scripts/entrypoint.sh"
-    networks:
-     - my-network
+    command: sh -c "sh /scripts/collectstatic.sh && sh /scripts/migrate.sh && sh /scripts/entrypoint.sh"
+    depends_on:
+      - db
+    # networks:
+    #  - my-network
 
   proxy:
-    dns:
-     - 8.8.8.8
-     - 8.8.4.4
+    # dns:
+    #  - 8.8.8.8
+    #  - 8.8.4.4
     build:
       context: ./proxy
       dockerfile: Dockerfile
     container_name: proxy
+    environment:
+      - SERVER_NAME=billingsystem
+      - SERVER_PORT=8000
+      - STATIC_LOCATION=/vol/static
     volumes:
-      - static_data:/vol/static
+      - static_data:/vol/static/staticfiles/
     ports:
-      - "80:80"
       - "443:443"
     depends_on:
       - billingsystem
-    networks:
-     - my-network
+    # networks:
+    #  - my-network
+  db:
+    # dns:
+    #  - 8.8.8.8
+    #  - 8.8.4.4
+    image: postgres:14.15-alpine3.20
+    restart: always
+    container_name: db
+    # command: ["executable", "arg"]
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    # networks:
+    #  - my-network
 
 volumes:
   static_data:
+  db_data:
+  log_data:
 
 networks:
   my-network:
