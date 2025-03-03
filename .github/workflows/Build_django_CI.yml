@@ -33,6 +33,12 @@ jobs:
     - run: |
         set -x
         docker version
+        docker version
+        if [ -f /etc/docker/daemon.json ]; then 
+          cat /etc/docker/daemon.json
+        else 
+          echo "/etc/docker/daemon.json file does not exist"
+        fi
         docker compose -f docker-compose-deploy.yaml up --build -d
         docker exec -i $(docker ps --format {{.Names}} | grep -i proxy) netstat -tua
         docker exec -i $(docker ps --format {{.Names}} | grep -i billingsystem) netstat -tua
