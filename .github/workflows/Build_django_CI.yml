@@ -16,23 +16,46 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-    
+
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - uses: actions/checkout@v4    
     - name: Run Tests
-      uses: docker/setup-docker-action@v4
+      run: |
+        python manage.py test
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Set up environment variables
+      run: |
+        echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> $GITHUB_ENV
+        echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
+        echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> $GITHUB_ENV
+        echo "DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> $GITHUB_ENV
+        echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> $GITHUB_ENV
+        echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> $GITHUB_ENV
+        echo "ENCRYPTED_EMAIL_PASSWORD=${{ secrets.ENCRYPTED_EMAIL_PASSWORD }}" >> $GITHUB_ENV
+
+    - name: Build and Deploy with Docker Compose
+      run: |
+        set -x
+        docker version
+        docker-compose -f docker-compose-deploy.yaml up --build -d
+        docker exec -i $(docker ps --format '{{.Names}}' | grep -i proxy) netstat -tua
+        docker exec -i $(docker ps --format '{{.Names}}' | grep -i billingsystem) netstat -tua
+        docker-compose -f docker-compose-deploy.yaml down
       env:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         DJANGO_SUPERUSER_USERNAME: ${{ secrets.DJANGO_SUPERUSER_USERNAME }}
-        DJANGO_SUERPUSER_EMAIL: ${{ secrets.DJANGO_SUERPUSER_EMAIL }}
+        DJANGO_SUPERUSER_EMAIL: ${{ secrets.DJANGO_SUPERUSER_EMAIL }}
         POSTGRES_ENGINE: 'django.db.backends.postgresql'
         POSTGRES_DB: 'postgres'
         POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
@@ -45,10 +68,3 @@ jobs:
         CSRF_TRUSTED_ORIGINS: 'http://localhost:8080,http://127.0.0.1'
         SERVER_NAME: 'billingsystem'
         SERVER_PORT: '8000'
-    - run: |
-        set -x
-        docker version
-        docker compose -f docker-compose-deploy.yaml up --build -d
-        docker exec -i $(docker ps --format {{.Names}} | grep -i proxy) netstat -tua
-        docker exec -i $(docker ps --format {{.Names}} | grep -i billingsystem) netstat -tua
-        docker compose -f docker-compose-deploy.yaml down
