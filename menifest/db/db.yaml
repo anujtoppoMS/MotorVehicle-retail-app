@@ -1,0 +1,62 @@
+      
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-app
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-app
+  template:
+    metadata:
+      labels:
+        app: db-app
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:14.15-alpine3.20
+          # command: ["sh", "-c", "docker-entrypoint.sh"]
+          envFrom:
+            - configMapRef:
+                name: db-cm
+            - secretRef:
+                name: db-secret            
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/postgresql/data
+          resources:
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
+            requests:
+              cpu: "150m"
+              memory: "128Mi"
+      volumes:
+        - name: db-data
+          hostPath:
+            path: /vol/
+            type: DirectoryOrCreate
+          # persistentVolumeClaim:
+          #   claimName: static-data-pvc
+      # imagePullSecrets:
+      #   - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-service
+  namespace: dev
+spec:
+  type: NodePort
+  selector:
+    app: db-app
+  ports:
+    - name: db-app-port
+      protocol: TCP
+      port: 5432
+      targetPort: 5432
+      nodePort: 30030

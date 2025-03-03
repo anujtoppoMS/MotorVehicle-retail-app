@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-cm
+  namespace: dev
+data:
+  SERVER_NAME: "billingsystem-service"
+  SERVER_PORT: "8000"
+  STATIC_LOCATION: "/vol/static"
