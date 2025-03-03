@@ -48,7 +48,7 @@ jobs:
         docker compose -f docker-compose-deploy.yaml up --build -d
         docker exec -i $(docker ps --format '{{.Names}}' | grep -i proxy) netstat -tua
         docker exec -i $(docker ps --format '{{.Names}}' | grep -i billingsystem) netstat -tua
-        docker-compose -f docker-compose-deploy.yaml down
+        docker compose -f docker-compose-deploy.yaml down
       env:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         DJANGO_SUPERUSER_USERNAME: ${{ secrets.DJANGO_SUPERUSER_USERNAME }}
