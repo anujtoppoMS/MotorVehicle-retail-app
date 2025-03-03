@@ -175,11 +175,9 @@ cython_debug/
 ./test2.txt
 .vscode/
 ./BillingSystem/.env_old
-./db/
 ./kubectl
 ./kubectl.sha256
-./menifest/
-./tls.crt
-./tls.crt.base64
-./tls.key
-./tls.key.base64
+.tls.crt
+.tls.crt.base64
+.tls.key
+.tls.key.base64
