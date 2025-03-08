@@ -1,9 +1,7 @@
 {% extends 'frontend/base.html' %}
 {% load static %}
 {% block brand %}
-    {% for post in posts %}
-        {{ post.brand }}
-    {% endfor %}
+    Inventory
 {% endblock %}
 {% block Showroom %}
 <h6 class="collapse-header">Inventory:</h6>
@@ -22,13 +20,8 @@
 <a class="collapse-item" href="{% url 'update_inventory' %}">Inventory Stocks</a>
 <a class="collapse-item" href="{% url 'update_product' %}">Update Products</a>
 <div class="collapse-divider"></div>
-<!-- <h6 class="collapse-header">Other Pages:</h6>
-<a class="collapse-item" href="404.html">404 Page</a>
-<a class="collapse-item" href="blank.html">Blank Page</a> -->
 {% endblock %}
 {% block body %}
-<div class="container-fluid">
-
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
@@ -47,7 +40,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 Earnings (Monthly)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">Rs00,00</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -65,7 +58,7 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                 Earnings (Annual)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">Rs00,00</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -200,10 +193,7 @@
             </div>
         </div>
     </div>
-</div>
 <!-- /.container-fluid -->
-
-</div>
 
 {% endblock %}
 

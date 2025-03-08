@@ -22,19 +22,11 @@
 <a class="collapse-item" href="#">Service Details</a>
 {% endblock %}
 {% block admin %}
-<a class="collapse-item" href="#">Add Staff</a>
-<a class="collapse-item" href="#">Delete staff</a>
-<a class="collapse-item" href="#">Register staff</a>
 <a class="collapse-item" href="{% url 'update_inventory' %}">Update Inventory Stocks</a>
 <a class="collapse-item" href="{% url 'update_product' %}">Update Products</a>
 <div class="collapse-divider"></div>
-<!-- <h6 class="collapse-header">Other Pages:</h6>
-<a class="collapse-item" href="404.html">404 Page</a>
-<a class="collapse-item" href="blank.html">Blank Page</a> -->
 {% endblock %}
 {% block body %}
-<div class="container-fluid">
-
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Customer Registration Page</h1>
@@ -115,7 +107,6 @@
         </div>
 <!----------------------------------------------------------------------------------------------------------------------------------------------------------->
     </div>
-</div>
 {% endblock %}
 
 

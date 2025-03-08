@@ -10,7 +10,5 @@ data:
   POSTGRES_DB: postgres
   POSTGRES_HOST: db-service
   POSTGRES_PORT: "5432"
-  ALLOWED_HOSTS: billingsystem.dev.svc.cluster.local,*.svc.cluster.local,billingsystem-service,billingsystem,20.219.243.156
-  CSRF_TRUSTED_ORIGINS: http://billingsystem,http://billingsystem-service,http://proxy-service,http://20.219.243.156,https://20.219.243.156
-
-  
+  ALLOWED_HOSTS: billingsystem.dev.svc.cluster.local,*.svc.cluster.local,billingsystem-service,billingsystem,98.70.224.121
+  CSRF_TRUSTED_ORIGINS: http://billingsystem,http://billingsystem-service,http://proxy-service,http://98.70.224.121,https://98.70.224.121
