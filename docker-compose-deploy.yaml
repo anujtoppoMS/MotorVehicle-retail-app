@@ -46,7 +46,7 @@ services:
       - SERVER_PORT=8000
       - STATIC_LOCATION=/vol/static
     volumes:
-      - static_data:/vol/static/staticfiles/
+      - static_data:/vol/static/
     ports:
       - "443:443"
     depends_on:

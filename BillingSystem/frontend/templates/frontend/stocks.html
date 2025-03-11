@@ -1,7 +1,8 @@
 {% extends 'frontend/base.html' %}
+{% load crispy_forms_tags %}
 {% load static %}
 {% block page_style %}
-<link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
 {% endblock %}
 {% block brand %}
     {% for post in posts %}
@@ -25,9 +26,7 @@
 <a class="collapse-item" href="{% url 'update_inventory' %}">Update Inventory Stocks</a>
 <a class="collapse-item" href="{% url 'update_product' %}">Update Products</a>
 <div class="collapse-divider"></div>
-<!-- <h6 class="collapse-header">Other Pages:</h6>
-<a class="collapse-item" href="404.html">404 Page</a>
-<a class="collapse-item" href="blank.html">Blank Page</a> -->
+
 {% endblock %}
 {% block body %}
     <!-- Page Heading -->
@@ -48,9 +47,9 @@
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
-                    <div class="row">{{ salesform.as_p }}
-                        {{ colourform.as_p }}
-                        {{ customerform.as_p }}
+                    <div class="row">{{ salesform|crispy }}
+                        {{ colourform|crispy }}
+                        {{ customerform|crispy }}
                         <button class="btn btn-primary btn-user btn-block" type="submit">
                         Submit for sale
                         </button>

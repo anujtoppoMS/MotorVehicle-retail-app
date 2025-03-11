@@ -1,7 +1,8 @@
 {% extends 'frontend/base.html' %}
+{% load crispy_forms_tags %}
 {% load static %}
 {% block page_style %}
-<link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
 {% endblock %}
 {% block brand %}
     {% for post in posts %}
@@ -25,9 +26,6 @@
 <a class="collapse-item" href="{% url 'update_inventory' %}">Update Inventory Stocks</a>
 <a class="collapse-item" href="{% url 'update_product' %}">Update Products</a>
 <div class="collapse-divider"></div>
-<!-- <h6 class="collapse-header">Other Pages:</h6>
-<a class="collapse-item" href="404.html">404 Page</a>
-<a class="collapse-item" href="blank.html">Blank Page</a> -->
 {% endblock %}
 {% block body %}
     <!-- Page Heading -->
@@ -74,7 +72,7 @@
                         <form action="{% url 'generate_Invoice' %}" method="post" target="_blank">
                             {% csrf_token %}
                             <div class="row">
-                                {{ form2.as_p }}
+                                {{ form2|crispy }}
                                 <button class="btn btn-primary btn-user btn-block" type="submit">
                                 Generate Invioce
                                 </button>
