@@ -19,13 +19,13 @@ jobs:
         docker compose --file docker-compose-deploy.yaml up --build -d
         container_name=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep -i billing)
         # docker tag $container_name monarch.azurecr.io/$container_name
-        docker tag $container_name anujtoppo/$container_name:v1
+        docker tag $container_name ${{ secrets.DOCKER_USERNAME }}/billingsystem:v1
         # docker push monarch.azurecr.io/$container_name
-        docker push $container_name:v1
+        docker push ${{ secrets.DOCKER_USERNAME }}/billingsystem:v1
         container_name=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep -i proxy)
         # docker tag $container_name monarch.azurecr.io/$container_name
-        docker tag $container_name anujtoppo/$container_name:v1
-        docker push anujtoppo/$container_name
+        docker tag $container_name ${{ secrets.DOCKER_USERNAME }}/proxy:v1
+        docker push ${{ secrets.DOCKER_USERNAME }}/proxy:v1
 
   # deploy:
   #   runs-on: ubuntu-latest
