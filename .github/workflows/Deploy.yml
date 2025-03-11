@@ -1,0 +1,60 @@
+name: CD - Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Kubectl
+      uses: azure/setup-kubectl@v4
+
+    - name: Set Context for Kubernetes
+      uses: Azure/k8s-set-context@v4
+      with:
+        kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+    - name: Check for env-config ConfigMap and apply
+      run: |
+        if ! kubectl get configmap env-config; then
+            kubectl create configmap env-config --from-env-file=.env -n billing-system
+        else
+            kubectl -n billing-system create configmap env-config --from-env-file=.env --dry-run=client -o yaml | kubectl apply -f -
+        fi
+        
+    - name: Deploy to AKS
+      uses: Azure/k8s-deploy@v4
+      with:
+        action: deploy
+        manifests: | 
+          pvc.yaml 
+          billing-app.yaml
+          proxy.yaml
+        namespace: billing-system
+
+    # - name: Deploy ingress to AKS
+    #   uses: Azure/k8s-deploy@v4
+    #   with:
+    #     action: deploy
+    #     manifests: |
+    #       ingress.yaml
+    #       loadbalancer.yaml
+    #     namespace: ingress-nginx
+        
+    # - name: Deploy LoadBalancer to AKS
+    #   uses: Azure/k8s-deploy@v4
+    #   with:
+    #     action: deploy
+    #     manifests: loadbalancer.yaml
+    #     namespace: billing-system
+          
+    - name: Verify Deployment 
+      run: | 
+        kubectl rollout status deployment/billingsystem -n billing-system
+        kubectl rollout status deployment/proxy -n billing-system
