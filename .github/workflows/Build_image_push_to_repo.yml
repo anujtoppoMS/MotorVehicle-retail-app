@@ -15,7 +15,7 @@ jobs:
     - name: Login to Docker Hub
       uses: docker/login-action@v3
       with:
-        username: ${{ secrets.DOCKER_USERNAME }}
+        username: ${{ vars.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_SECRET }}
     - name: Build the Docker image
       run: |
@@ -25,10 +25,10 @@ jobs:
 
         # Tag and push billing image
         container_name=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep -i billing)
-        docker tag $container_name ${{ secrets.DOCKER_USERNAME }}/billingsystem:v1
-        docker push ${{ secrets.DOCKER_USERNAME }}/billingsystem:v1
+        docker tag $container_name ${{ vars.DOCKER_USERNAME }}/billingsystem:v1
+        docker push ${{ vars.DOCKER_USERNAME }}/billingsystem:v1
 
         # Tag and push proxy image
         container_name=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep -i proxy)
-        docker tag $container_name "${{ secrets.DOCKER_USERNAME }}/proxy:v1"
-        docker push ${{ secrets.DOCKER_USERNAME }}/proxy:v1
+        docker tag $container_name "${{ vars.DOCKER_USERNAME }}/proxy:v1"
+        docker push ${{ vars.DOCKER_USERNAME }}/proxy:v1
