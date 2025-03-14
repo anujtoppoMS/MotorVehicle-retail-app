@@ -3,8 +3,8 @@ on:
   workflow_dispatch
 jobs:
     build:
-      uses: .github/workflows/Build_image_push_to_repo.yml@main
+      uses: anujtoppoMS/MotorVehicle-retail-app/.github/workflows/Build_image_push_to_repo.yml@main
 
     deploy:
         needs: build
-        uses: .github/workflows/Deploy.yml@main
+        uses: anujtoppoMS/MotorVehicle-retail-app/.github/workflows/Deploy.yml@main
