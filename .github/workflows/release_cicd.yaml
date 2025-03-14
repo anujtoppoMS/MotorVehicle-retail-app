@@ -6,5 +6,5 @@ jobs:
       uses: anujtoppoMS/MotorVehicle-retail-app/.github/workflows/Build_image_push_to_repo.yml@main
 
     deploy:
-        needs: build
-        uses: anujtoppoMS/MotorVehicle-retail-app/.github/workflows/Deploy.yml@main
+      needs: build
+      uses: anujtoppoMS/MotorVehicle-retail-app/.github/workflows/Deploy.yml@main

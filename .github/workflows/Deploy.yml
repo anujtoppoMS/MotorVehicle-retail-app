@@ -3,7 +3,7 @@ name: CD - Deploy
 on:
   workflow_dispatch:
   workflow_call:
-    
+
 jobs:
 
   deploy:
@@ -25,10 +25,13 @@ jobs:
       run: |
         if ! kubectl -n dev get cm configmap-billing; then
             kubectl -n dev -f apply menifest/app/cm-billing-app.yaml
+        fi
         if ! kubectl -n dev get cm db-cm; then
             kubectl -n dev -f apply menifest/proxy/proxy_cm.yaml
+        fi
         if ! kubectl -n dev get secret billing-app-secret; then
             kubectl -n dev -f apply menifest/app/billing-app-secret.yaml
+        fi
         if ! kubectl -n dev get secret db-secret; then
             kubectl -n dev apply -f menifest/db/db_secret.yaml
         fi
