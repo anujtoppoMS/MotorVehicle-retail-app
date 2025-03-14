@@ -3,10 +3,10 @@ name: Build Image and Push
 on:
   workflow_dispatch:
   workflow_call:
-    inputs:
-      build_image_input:
-        required: true
-        type: string
+    # inputs:
+    #   build_image_input:
+    #     required: true
+    #     type: string
 
 jobs:
 

@@ -20,41 +20,43 @@ jobs:
       with:
         kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
-    - name: Check for env-config ConfigMap and apply
+    - name: Check for ConfigMap and required secrets
       run: |
-        if ! kubectl get configmap env-config; then
-            kubectl create configmap env-config --from-env-file=.env -n billing-system
-        else
-            kubectl -n billing-system create configmap env-config --from-env-file=.env --dry-run=client -o yaml | kubectl apply -f -
+        if ! kubectl -n dev get cm configmap-billing; then
+            kubectl -n dev -f apply menifest/app/cm-billing-app.yaml
+        if ! kubectl -n dev get cm db-cm; then
+            kubectl -n dev -f apply menifest/proxy/proxy_cm.yaml
+        if ! kubectl -n dev get secret billing-app-secret; then
+            kubectl -n dev -f apply menifest/app/billing-app-secret.yaml
+        if ! kubectl -n dev get secret db-secret; then
+            kubectl -n dev apply -f menifest/db/db_secret.yaml
         fi
         
-    - name: Deploy to AKS
+    - name: Deploy DB
       uses: Azure/k8s-deploy@v4
       with:
         action: deploy
         manifests: | 
-          pvc.yaml 
-          billing-app.yaml
-          proxy.yaml
-        namespace: billing-system
+          menifest/db/db.yaml 
+        namespace: dev
 
-    # - name: Deploy ingress to AKS
-    #   uses: Azure/k8s-deploy@v4
-    #   with:
-    #     action: deploy
-    #     manifests: |
-    #       ingress.yaml
-    #       loadbalancer.yaml
-    #     namespace: ingress-nginx
+    - name: Deploy Billing App
+      uses: Azure/k8s-deploy@v4
+      with:
+        action: deploy
+        manifests: |
+          menifest/app/billing-app.yaml
+        namespace: dev
         
-    # - name: Deploy LoadBalancer to AKS
-    #   uses: Azure/k8s-deploy@v4
-    #   with:
-    #     action: deploy
-    #     manifests: loadbalancer.yaml
-    #     namespace: billing-system
+    - name: Deploy Proxy
+      uses: Azure/k8s-deploy@v4
+      with:
+        action: deploy
+        manifests: |
+          menifest/proxy/proxy.yaml
+        namespace: dev
           
     - name: Verify Deployment 
       run: | 
-        kubectl rollout status deployment/billingsystem -n billing-system
-        kubectl rollout status deployment/proxy -n billing-system
+        kubectl rollout status deployment/billingsystem -n dev
+        kubectl rollout status deployment/proxy -n dev
