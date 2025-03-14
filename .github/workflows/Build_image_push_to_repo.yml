@@ -18,7 +18,7 @@ jobs:
     #     password: ${{ secrets.DOCKER_SECRET }}
     - name: Build the Docker image
       run: |
-        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        echo "${{ secrets.DOCKER_SECRET }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
         # Build Docker images using docker-compose
         docker compose --file docker-compose-deploy.yaml build
