@@ -3,15 +3,15 @@ name: Build Image and Push
 on:
   workflow_dispatch:
   workflow_call:
-    inputs:
-      username:
-        description: "docker username"
-        required: true
-        type: string
-      token:
-        description: "docker personal access token"
-        required: true
-        type: string
+    # inputs:
+    #   username:
+    #     description: "docker username"
+    #     required: true
+    #     type: string
+    # secrets:
+    #   token:
+    #     description: "docker personal access token"
+    #     required: true
 
 jobs:
   build:
@@ -19,25 +19,21 @@ jobs:
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v2
-    - name: Login to Docker Hub
-      uses: docker/login-action@v4
-      with:
-        username: ${{ inputs.username || vars.DOCKER_USERNAME }}
-        password: ${{ inputs.token || secrets.DOCKER_SECRET }}
+      uses: actions/checkout@v4
+
     - name: Build the Docker image
       run: |
-        # echo "${{ secrets.DOCKER_SECRET || inputs.token }}" | docker login -u ${{ secrets.DOCKER_USERNAME || inputs.username }} --password-stdin
+        echo "${{ secrets.DOCKER_SECRET }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
         # Build Docker images using docker-compose
         docker compose --file docker-compose-deploy.yaml build
 
         # Tag and push billing image
         container_name=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep -i billing)
-        docker tag $container_name ${{ vars.DOCKER_USERNAME }}/billingsystem:v1
-        docker push ${{ vars.DOCKER_USERNAME }}/billingsystem:v1
+        docker tag $container_name ${{ secrets.DOCKER_USERNAME }}/billingsystem:v1
+        docker push ${{ secrets.DOCKER_USERNAME }}/billingsystem:v1
 
         # Tag and push proxy image
         container_name=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep -i proxy)
-        docker tag $container_name "${{ vars.DOCKER_USERNAME }}/proxy:v1"
-        docker push ${{ vars.DOCKER_USERNAME }}/proxy:v1
+        docker tag $container_name "${{ secrets.DOCKER_USERNAME }}/proxy:v1"
+        docker push ${{ secrets.DOCKER_USERNAME }}/proxy:v1
