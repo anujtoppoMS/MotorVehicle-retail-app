@@ -3,6 +3,15 @@ name: Build Image and Push
 on:
   workflow_dispatch:
   workflow_call:
+    inputs:
+      username:
+        description: "docker username"
+        required: true
+        type: string
+      token:
+        description: "docker personal access token"
+        required: true
+        type: string
 
 jobs:
   build:
@@ -18,7 +27,7 @@ jobs:
     #     password: ${{ secrets.DOCKER_SECRET }}
     - name: Build the Docker image
       run: |
-        echo "${{ secrets.DOCKER_SECRET }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        echo "${{ secrets.DOCKER_SECRET || inputs.token }}" | docker login -u ${{ secrets.DOCKER_USERNAME || inputs.username }} --password-stdin
 
         # Build Docker images using docker-compose
         docker compose --file docker-compose-deploy.yaml build

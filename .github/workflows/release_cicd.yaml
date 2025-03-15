@@ -4,7 +4,12 @@ on:
 jobs:
     build:
       uses: anujtoppoMS/MotorVehicle-retail-app/.github/workflows/Build_image_push_to_repo.yml@main
+      with:
+        username: ${{ vars.DOCKER_USERNAME }}
+        token: ${{ secrets.DOCKER_SECRET }}
 
     deploy:
       needs: build
       uses: anujtoppoMS/MotorVehicle-retail-app/.github/workflows/Deploy.yml@main
+      with:
+        kubeconfig: ${{ secrets.KUBE_CONFIG }}
