@@ -3,11 +3,6 @@ name: CD - Deploy
 on:
   workflow_dispatch:
   workflow_call:
-    inputs:
-      kubeconfig: 
-        description: "kubeconfig"
-        required: true 
-        type: string
 
 
 jobs:
@@ -25,7 +20,7 @@ jobs:
     - name: Set Context for Kubernetes
       uses: Azure/k8s-set-context@v4
       with:
-        kubeconfig: ${{ secrets.KUBE_CONFIG || inputs.kubeconfig }}
+        kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
     - name: Check for ConfigMap and required secrets
       run: |
