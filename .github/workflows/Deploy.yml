@@ -35,8 +35,6 @@ jobs:
         if ! kubectl -n dev get secret db-secret; then
             kubectl -n dev apply -f menifest/db/db_secret.yaml
         fi
-<<<<<<< HEAD
-=======
       env:
         DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
         DJANGO_SUPERUSER_USERNAME: ${{ secrets.DJANGO_SUPERUSER_USERNAME }}
@@ -53,7 +51,6 @@ jobs:
         CSRF_TRUSTED_ORIGINS: 'http://localhost:8080,http://127.0.0.1'
         SERVER_NAME: 'billingsystem'
         SERVER_PORT: '8000'
->>>>>>> e2a3997 (comminting unsaved deploy action)
         
     - name: Deploy DB
       uses: Azure/k8s-deploy@v4
