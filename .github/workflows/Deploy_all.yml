@@ -1,0 +1,75 @@
+name: CD - Deploy
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+
+jobs:
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Kubectl
+      uses: azure/setup-kubectl@v4
+
+    - name: Set Context for Kubernetes
+      uses: Azure/k8s-set-context@v4
+      with:
+        kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+    - name: Check for ConfigMap and required secrets
+      run: |
+        kubectl -n dev -f apply menifest/app/cm-billing-app.yaml
+        kubectl -n dev -f apply menifest/proxy/proxy_cm.yaml
+        kubectl -n dev -f apply menifest/app/billing-app-secret.yaml
+        kubectl -n dev apply -f menifest/db/db_secret.yaml
+        
+      env:
+        DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+        DJANGO_SUPERUSER_USERNAME: ${{ secrets.DJANGO_SUPERUSER_USERNAME }}
+        DJANGO_SUPERUSER_EMAIL: ${{ secrets.DJANGO_SUPERUSER_EMAIL }}
+        POSTGRES_ENGINE: 'django.db.backends.postgresql'
+        POSTGRES_DB: 'postgres'
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        POSTGRES_USER: 'postgres'
+        POSTGRES_HOST: 'db-service'
+        POSTGRES_PORT: '5432'
+        EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+        ENCRYPTED_EMAIL_PASSWORD: ${{ secrets.ENCRYPTED_EMAIL_PASSWORD }}
+        ALLOWED_HOSTS: 'localhost,127.0.0.1,0.0.0.0,billingsystem'
+        CSRF_TRUSTED_ORIGINS: 'http://localhost:8080,http://127.0.0.1'
+        SERVER_NAME: 'billingsystem'
+        SERVER_PORT: '8000'
+        
+    - name: Deploy DB
+      uses: Azure/k8s-deploy@v4
+      with:
+        action: deploy
+        manifests: | 
+          menifest/db/db.yaml 
+        namespace: dev
+
+    - name: Deploy Billing App
+      uses: Azure/k8s-deploy@v4
+      with:
+        action: deploy
+        manifests: |
+          menifest/app/billing-app.yaml
+        namespace: dev
+        
+    - name: Deploy Proxy
+      uses: Azure/k8s-deploy@v4
+      with:
+        action: deploy
+        manifests: |
+          menifest/proxy/proxy.yaml
+        namespace: dev
+          
+    - name: Verify Deployment 
+      run: | 
+        kubectl rollout status deployment/billingsystem -n dev
+        kubectl rollout status deployment/proxy -n dev
