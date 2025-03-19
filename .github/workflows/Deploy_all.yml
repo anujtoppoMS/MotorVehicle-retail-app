@@ -1,4 +1,4 @@
-name: CD - Deploy
+name: CD - Deploy all
 
 on:
   workflow_dispatch:
