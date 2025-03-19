@@ -1,4 +1,4 @@
-name: Release pipeline
+name: Release pipeline required only
 on:
   workflow_dispatch
 jobs:
