@@ -35,6 +35,7 @@ jobs:
         DJANGO_SUPERUSER_USERNAME: ${{ env.DJANGO_SUPERUSER_USERNAME }}
         DJANGO_SUERPUSER_EMAIL: ${{ env.DJANGO_SUERPUSER_EMAIL }}
       run: |
+        echo "$DJANGO_SUPERUSER_USERNAME"
         kubectl -n dev apply -f menifest/app/cm-billing-app.yaml
 
     - name: Create configMap for proxy
