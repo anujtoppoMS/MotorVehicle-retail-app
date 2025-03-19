@@ -23,9 +23,9 @@ jobs:
 
     - name: Check for ConfigMap and required secrets
       run: |
-        kubectl -n dev -f apply menifest/app/cm-billing-app.yaml
-        kubectl -n dev -f apply menifest/proxy/proxy_cm.yaml
-        kubectl -n dev -f apply menifest/app/billing-app-secret.yaml
+        kubectl -n dev apply -f menifest/app/cm-billing-app.yaml
+        kubectl -n dev apply -f menifest/proxy/proxy_cm.yaml
+        kubectl -n dev apply -f menifest/app/billing-app-secret.yaml
         kubectl -n dev apply -f menifest/db/db_secret.yaml
         
       env:
