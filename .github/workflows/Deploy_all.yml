@@ -20,7 +20,7 @@ jobs:
       uses: Azure/k8s-set-context@v4
       with:
         kubeconfig: ${{ secrets.KUBE_CONFIG }}
-
+        
     - name: Encode Secrets in Base64
       run: |
         echo "DJANGO_SECRET_KEY=$(echo -n '${{ secrets.DJANGO_SECRET_KEY }}' | base64)" >> $GITHUB_ENV
