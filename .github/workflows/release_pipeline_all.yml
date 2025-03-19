@@ -1,0 +1,12 @@
+name: Release pipeline
+on:
+  workflow_dispatch
+jobs:
+    build:
+      uses: anujtoppoMS/MotorVehicle-retail-app/.github/workflows/Build_image_push_to_repo.yml@main
+      secrets: inherit
+
+    deploy:
+      needs: build
+      uses: anujtoppoMS/MotorVehicle-retail-app/.github/workflows/Deploy_all.yml@main
+      secrets: inherit
