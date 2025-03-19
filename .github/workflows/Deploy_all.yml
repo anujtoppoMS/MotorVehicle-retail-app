@@ -21,6 +21,13 @@ jobs:
       with:
         kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
+    - name: Encode Secrets in Base64
+      run: |
+        echo "DJANGO_SECRET_KEY=$(echo -n '${{ secrets.DJANGO_SECRET_KEY }}' | base64)" >> $GITHUB_ENV
+        echo "POSTGRES_PASSWORD=$(echo -n '${{ secrets.POSTGRES_PASSWORD }}' | base64)" >> $GITHUB_ENV
+        echo "EMAIL_HOST_USER=$(echo -n '${{ secrets.EMAIL_HOST_USER }}' | base64)" >> $GITHUB_ENV
+        echo "ENCRYPTED_EMAIL_PASSWORD=$(echo -n '${{ secrets.ENCRYPTED_EMAIL_PASSWORD }}' | base64)" >> $GITHUB_ENV
+      
     - name: Check for ConfigMap and required secrets
       run: |
         kubectl -n dev apply -f menifest/app/cm-billing-app.yaml
@@ -29,17 +36,17 @@ jobs:
         kubectl -n dev apply -f menifest/db/db_secret.yaml
         
       env:
-        DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-        DJANGO_SUPERUSER_USERNAME: ${{ secrets.DJANGO_SUPERUSER_USERNAME }}
-        DJANGO_SUPERUSER_EMAIL: ${{ secrets.DJANGO_SUPERUSER_EMAIL }}
+        DJANGO_SECRET_KEY: ${{ env.DJANGO_SECRET_KEY }}
+        DJANGO_SUPERUSER_USERNAME: ${{ env.DJANGO_SUPERUSER_USERNAME }}
+        DJANGO_SUPERUSER_EMAIL: ${{ env.DJANGO_SUPERUSER_EMAIL }}
         POSTGRES_ENGINE: 'django.db.backends.postgresql'
         POSTGRES_DB: 'postgres'
-        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
         POSTGRES_USER: 'postgres'
         POSTGRES_HOST: 'db-service'
         POSTGRES_PORT: '5432'
-        EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
-        ENCRYPTED_EMAIL_PASSWORD: ${{ secrets.ENCRYPTED_EMAIL_PASSWORD }}
+        EMAIL_HOST_USER: ${{ env.EMAIL_HOST_USER }}
+        ENCRYPTED_EMAIL_PASSWORD: ${{ env.ENCRYPTED_EMAIL_PASSWORD }}
         ALLOWED_HOSTS: 'localhost,127.0.0.1,0.0.0.0,billingsystem'
         CSRF_TRUSTED_ORIGINS: 'http://localhost:8080,http://127.0.0.1'
         SERVER_NAME: 'billingsystem'
