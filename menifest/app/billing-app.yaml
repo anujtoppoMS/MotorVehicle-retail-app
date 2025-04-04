@@ -23,6 +23,8 @@ spec:
           volumeMounts:
             - name: static-data
               mountPath: /mnt/data
+            - name: secret-store-inline
+              mountPath: /mnt/secret-store-inline
           securityContext:
             runAsUser: 0  # run as root user
       containers:
@@ -34,11 +36,13 @@ spec:
         envFrom:
           - configMapRef:
               name: configmap-billing
-          - secretRef:
-              name: billing-app-secret
+          # - secretRef:
+          #     name: billing-app-secret
         volumeMounts:
         - name: static-data
           mountPath: /staticfiles/
+        - name: secret-store-inline
+          mountPath: /mnt/secret-store-inline
         # command: ["sh", "-c", "sh /scripts/collectstatic.sh && sh /scripts/entrypoint.sh"]
         resources:
           limits:
@@ -52,10 +56,14 @@ spec:
         hostPath:
           path: /static_data/
           type: DirectoryOrCreate
-          # sizeLimit: 10Mi
-
-        # persistentVolumeClaim:
-        #   claimName: static-data-pvc
+      - name: secret-store-inline
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: billingapp-secret-provider
+          nodePublishSecretRef:
+            name: secrets-store-creds
       imagePullSecrets:
       - name: imagepullsecret-billingapp
 ---
