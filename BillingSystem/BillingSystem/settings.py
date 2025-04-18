@@ -15,6 +15,13 @@ from pathlib import Path
 # # Load environment variables from .env file 
 # load_dotenv()
 
+def read_secret(file_path):
+    try:
+        with open(file_path, "r") as file:
+            return file.read().strip()
+    except FileNotFoundError:
+        return None
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,7 +30,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "mysecretfordevenv")
+SECRET_KEY_PATH = "/mnt/secret-store-inline/DJANGO-SECRET-KEY"
+SECRET_KEY = read_secret(SECRET_KEY_PATH)
+#SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "mysecretfordevenv")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get('DEBUG', 1)))
@@ -106,9 +115,14 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+DB_USERNAME_PATH = "/mnt/secret-store-inline/POSTGRES-USER"
+DB_PASSWORD_PATH = "/mnt/secret-store-inline/POSTGRES-PASSWORD"
+
+# Helper function to read secrets from mounted files
+
 DB_ENGINE = os.environ.get("POSTGRES_ENGINE")
-DB_USERNAME = os.environ.get("POSTGRES_USER")
-DB_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
+DB_USERNAME = read_secret("DB_USERNAME_PATH")
+DB_PASSWORD = read_secret("DB_PASSWORD_PATH")
 DB_DATABASE = os.environ.get("POSTGRES_DB")
 DB_HOST = os.environ.get("POSTGRES_HOST")
 DB_PORT = os.environ.get("POSTGRES_PORT")
@@ -197,13 +211,14 @@ LOGIN_URL = 'login'
 
 
 import os
-
+EMAIL_HOST_USER_PATH = "/mnt/secret-store-inline/EMAIL-HOST-USER"
+EMAIL_HOST_PASSWORD_PATH = "/mnt/secret-store-inline/ENCRYPTED-EMAIL-PASSWORD"
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('ENCRYPTED_EMAIL_PASSWORD')
+EMAIL_HOST_USER = read_secret(EMAIL_HOST_USER_PATH)
+EMAIL_HOST_PASSWORD = read_secret(EMAIL_HOST_PASSWORD_PATH)
 
 
 REST_FRAMEWORK = {

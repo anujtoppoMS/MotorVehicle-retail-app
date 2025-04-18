@@ -17,17 +17,23 @@ spec:
       containers:
         - name: postgres
           image: postgres:14.15-alpine3.20
-          # command: ["sh", "-c", "docker-entrypoint.sh"]
+          command: ["sh", "-c"]
+          args:
+            - |
+              export POSTGRES_USER=$(cat /mnt/secret-store/POSTGRES-USER)
+              export POSTGRES_PASSWORD=$(cat /mnt/secret-store/POSTGRES-PASSWORD)
           envFrom:
             - configMapRef:
                 name: db-cm
-            - secretRef:
-                name: db-secret            
+            # - secretRef:
+            #     name: db-secret            
           ports:
             - containerPort: 5432
           volumeMounts:
             - name: db-data
               mountPath: /var/lib/postgresql/data
+            - name: secret-store
+              mountPath: /mnt/secret-store/
           resources:
             limits:
               cpu: "300m"
@@ -40,10 +46,14 @@ spec:
           hostPath:
             path: /vol/
             type: DirectoryOrCreate
-          # persistentVolumeClaim:
-          #   claimName: static-data-pvc
-      # imagePullSecrets:
-      #   - name: regcred
+        - name: secret-store
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              SecretProviderClass: db-secret-provider
+            nodePublishSecretRef:
+              name: secrets-store-creds
 ---
 apiVersion: v1
 kind: Service
